@@ -22,7 +22,7 @@ import (
 //	@param client
 //	@return *interactions.BasicNft
 //	@return error
-func DeployBasicNft(privateKey *ecdsa.PrivateKey, client *ethclient.Client, chainID int64) (*interactions.BasicNft, error) {
+func DeployBasicNft(privateKey *ecdsa.PrivateKey, client *ethclient.Client) (*interactions.BasicNft, error) {
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
@@ -34,7 +34,11 @@ func DeployBasicNft(privateKey *ecdsa.PrivateKey, client *ethclient.Client, chai
 	if err != nil {
 		return nil, err
 	}
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(chainID))
+	chainID, err := client.ChainID(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0) // in wei
 	auth.GasLimit = 0          // in units,0 = estimate
@@ -74,14 +78,14 @@ func GetBasicNft(address string, client *ethclient.Client) (*interactions.BasicN
 	return basicNft, nil
 }
 
-// MintNft
+// MintBasicNft
 //
 //	@Description: 铸币
 //	@param privateKey
 //	@param client
 //	@param basicNft
 //	@param tokenURI
-func MintNft(privateKey *ecdsa.PrivateKey, client *ethclient.Client, basicNft *interactions.BasicNft, tokenURI string, chainID int64) (*types.Transaction, error) {
+func MintBasicNft(privateKey *ecdsa.PrivateKey, client *ethclient.Client, basicNft *interactions.BasicNft, tokenURI string) (*types.Transaction, error) {
 	publicKey := privateKey.Public()
 	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
 	if !ok {
@@ -93,7 +97,11 @@ func MintNft(privateKey *ecdsa.PrivateKey, client *ethclient.Client, basicNft *i
 	if err != nil {
 		return nil, err
 	}
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, big.NewInt(chainID))
+	chainID, err := client.ChainID(context.Background())
+	if err != nil {
+		return nil, err
+	}
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
 	auth.Nonce = big.NewInt(int64(nonce))
 	auth.Value = big.NewInt(0) // in wei
 	auth.GasLimit = 0          // in units,0 = estimate
