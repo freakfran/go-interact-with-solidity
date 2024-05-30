@@ -8,4 +8,4 @@ out
 gen
 .env
 contracts/build/**
-lib/**
+contracts/lib/**

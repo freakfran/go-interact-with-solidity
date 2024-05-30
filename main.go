@@ -5,7 +5,6 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/gookit/slog"
 	"github.com/joho/godotenv"
-	"go-made/interactions"
 	"go-made/script"
 	"os"
 )
@@ -16,7 +15,7 @@ func main() {
 		slog.Fatal("Error loading .env file")
 		return
 	}
-	var moodNft *interactions.MoodNft
+	var moodNft *abi.MoodNft
 	client, err := ethclient.Dial(os.Getenv("SEPOLIA_URL"))
 	privateKey, err := crypto.HexToECDSA(os.Getenv("SEPOLIA_PRIVATE_KEY"))
 	happySvg, err := os.ReadFile("../img/happy.svg")
